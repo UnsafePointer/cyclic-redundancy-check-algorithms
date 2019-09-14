@@ -10,8 +10,9 @@ import (
 func TestCRC8Check(t *testing.T) {
 	b := []byte("SCEA")
 	crc := CRC8(b)
-	if crc != 0x0A {
-		t.Error(fmt.Sprintf("Expected check value 0x0A, got: %#02X instead", crc))
+	expected := byte(0x0A)
+	if crc != expected {
+		t.Error(fmt.Sprintf("Expected check value %#02X, got: %#02X instead", expected, crc))
 	}
 }
 
