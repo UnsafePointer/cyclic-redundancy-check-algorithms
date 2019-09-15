@@ -3,6 +3,7 @@ package crc_test
 import (
 	"fmt"
 	"testing"
+	"unsafe"
 
 	. "github.com/UnsafePointer/cyclic-redundancy-check-algorithms/crc"
 )
@@ -12,21 +13,26 @@ func TestCRC32Check(t *testing.T) {
 		Polynomial: 0xF10FF0F1,
 	}
 	b := []byte("Sony Computer Entertainment of America")
-	check := crc.Calculate(b)
 	expected := uint32(0x49A09045)
-	if check != expected {
-		t.Error(fmt.Sprintf("Expected check value %#08X, got: %#08X instead", expected, crc))
-	}
-}
+	check := uint32(0)
 
-func TestCRC32Full(t *testing.T) {
-	crc := CRC32{
-		Polynomial: 0xF10FF0F1,
+	t.Run("CRC32Check", func(t *testing.T) {
+		check = crc.Calculate(b)
+		if check != expected {
+			t.Error(fmt.Sprintf("Expected check value %#08X, got: %#08X instead", expected, crc))
+		}
+	})
+
+	// Endianness handling, might not work in your machine
+	bCheck := (*[4]byte)(unsafe.Pointer(&check))[:]
+	for i := len(bCheck) - 1; i >= 0; i-- {
+		b = append(b, bCheck[i])
 	}
-	b := []byte("Sony Computer Entertainment of America")
-	b = append(b, 0x49, 0xA0, 0x90, 0x45)
-	check := crc.Calculate(b)
-	if check != 0x0 {
-		t.Error(fmt.Sprintf("Expected 0x0, got: %#08X instead", crc))
-	}
+
+	t.Run("CRCFull", func(t *testing.T) {
+		check := crc.Calculate(b)
+		if check != 0x0 {
+			t.Error(fmt.Sprintf("Expected 0x0, got: %#08X instead", crc))
+		}
+	})
 }
