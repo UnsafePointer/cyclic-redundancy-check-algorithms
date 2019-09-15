@@ -9,9 +9,7 @@ import (
 )
 
 func TestCRC32Check(t *testing.T) {
-	crc := CRC32{
-		Polynomial: 0xF10FF0F1,
-	}
+	crc := NewCRC32(0xF10FF0F1)
 	b := []byte("Sony Computer Entertainment of America")
 	expected := uint32(0x49A09045)
 	check := uint32(0)

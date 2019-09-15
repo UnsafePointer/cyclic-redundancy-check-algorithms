@@ -9,9 +9,7 @@ import (
 )
 
 func TestCRC16(t *testing.T) {
-	crc := CRC16{
-		Polynomial: 0x00F1,
-	}
+	crc := NewCRC16(0x00F1)
 	b := []byte("Sony Computer Entertainment of America")
 	expected := uint16(0x440C)
 	check := uint16(0)

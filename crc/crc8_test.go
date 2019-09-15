@@ -8,9 +8,7 @@ import (
 )
 
 func TestCRC8(t *testing.T) {
-	crc := CRC8{
-		Polynomial: 0xF1,
-	}
+	crc := NewCRC8(0xF1)
 	b := []byte("SCEA")
 	expected := byte(0x0A)
 	check := byte(0)

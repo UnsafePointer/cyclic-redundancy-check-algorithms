@@ -1,7 +1,16 @@
 package crc
 
 type CRC8 struct {
-	Polynomial byte
+	polynomial byte
+	table      [256]byte
+}
+
+func NewCRC8(polynomial byte) *CRC8 {
+	crc := &CRC8{
+		polynomial: polynomial,
+	}
+	crc.table = crc.generateTable()
+	return crc
 }
 
 func (crc CRC8) generateTable() [256]byte {
@@ -10,7 +19,7 @@ func (crc CRC8) generateTable() [256]byte {
 		currentByte := byte(i)
 		for i := 0; i < 8; i++ {
 			if (currentByte & 0x80) != 0 {
-				currentByte = (currentByte << 1) ^ crc.Polynomial
+				currentByte = (currentByte << 1) ^ crc.polynomial
 			} else {
 				currentByte <<= 1
 			}
@@ -22,11 +31,10 @@ func (crc CRC8) generateTable() [256]byte {
 }
 
 func (crc CRC8) Calculate(bytes []byte) byte {
-	table := crc.generateTable()
 	check := byte(0)
 	for _, currentByte := range bytes {
 		data := currentByte ^ check
-		check = table[data]
+		check = crc.table[data]
 	}
 
 	return check
