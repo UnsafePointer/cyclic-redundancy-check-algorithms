@@ -8,19 +8,25 @@ import (
 )
 
 func TestCRC32Check(t *testing.T) {
+	crc := CRC32{
+		Polynomial: 0xF10FF0F1,
+	}
 	b := []byte("Sony Computer Entertainment of America")
-	crc := CRC32(b)
+	check := crc.Calculate(b)
 	expected := uint32(0x49A09045)
-	if crc != expected {
+	if check != expected {
 		t.Error(fmt.Sprintf("Expected check value %#08X, got: %#08X instead", expected, crc))
 	}
 }
 
 func TestCRC32Full(t *testing.T) {
+	crc := CRC32{
+		Polynomial: 0xF10FF0F1,
+	}
 	b := []byte("Sony Computer Entertainment of America")
 	b = append(b, 0x49, 0xA0, 0x90, 0x45)
-	crc := CRC32(b)
-	if crc != 0x0 {
+	check := crc.Calculate(b)
+	if check != 0x0 {
 		t.Error(fmt.Sprintf("Expected 0x0, got: %#08X instead", crc))
 	}
 }
